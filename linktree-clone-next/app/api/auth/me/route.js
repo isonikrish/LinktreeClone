@@ -1,28 +1,27 @@
 import { connectDB } from "@/lib/config/db";
-import UserModel from "@/lib/models/UserModel";
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { protectUser } from "@/lib/utils/protectRoute.js";
+import UserModel from "@/lib/models/UserModel"; // Import the UserModel
+import LinktreeModel from "@/lib/models/LinktreeModel"; // Import the LinktreeModel
 
 export async function GET(request) {
   await connectDB();
 
   try {
-    const token = request.cookies.get("userToken");
+    // Get the authenticated user
+    const AuthUser = await protectUser(request);
 
-    // If no token, return an unauthorized error
-    if (!token) {
-      return NextResponse.json({ msg: "Unauthorized" }, { status: 401 });
-    }
+    // Fetch the user and populate the linktrees field
+    const User = await UserModel.findOne({ _id: AuthUser.id }).populate("linktrees");
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await UserModel.findById(decoded.id).select("-password");
-    if (!user) {
-      return NextResponse.json({ msg: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ user }, { status: 200 });
+    return NextResponse.json({ User }, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ msg: "Server Error" }, { status: 500 });
+    if (error.message.includes("Unauthorized")) {
+      return NextResponse.json({ msg: error.message }, { status: 401 });
+    } else if (error.message.includes("User not found")) {
+      return NextResponse.json({ msg: error.message }, { status: 404 });
+    } else {
+      return NextResponse.json({ msg: "Server Error" }, { status: 500 });
+    }
   }
 }

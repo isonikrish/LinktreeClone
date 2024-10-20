@@ -21,7 +21,7 @@ export default function Auth() {
 
   return (
     <div className="flex h-screen">
-      <Toaster />
+      
       <div className="flex-1 flex bg-white shadow-md">
         {login ? <Login setLogin={setLogin} /> : <Signup setLogin={setLogin} />}
       </div>

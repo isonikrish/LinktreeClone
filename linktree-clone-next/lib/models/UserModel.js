@@ -21,12 +21,7 @@ const UserSchema = new mongoose.Schema({
     profileImage: {
         type: String, // URL of the profile image
     },
-    linktrees: [
-        {
-            type: mongoose.Types.ObjectId,
-        }
-    ],  // An array of links
-
+    linktrees: [{ type: mongoose.Schema.Types.ObjectId, ref: "Linktree" }],
 
 },{timestamps:true})
 

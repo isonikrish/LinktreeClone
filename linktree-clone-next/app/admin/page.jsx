@@ -1,4 +1,5 @@
 "use client"
+import AccountPopup from '@/Components/AccountPopup'
 import React from 'react'
 
 function page() {
@@ -6,7 +7,7 @@ function page() {
     <div>
       
       <div className='py-3'>
-
+          
       </div>
       
     </div>
