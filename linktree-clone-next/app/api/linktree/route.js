@@ -81,17 +81,36 @@ export async function GET(request) {
   const user = await protectUser(request);
   const url = new URL(request.url);
   const id = url.searchParams.get("id");
+  const username = url.searchParams.get("username");
 
   try {
-    const linktree = await LinktreeModel.findOne({
-      _id: id,
-      userId: user._id,
-    }).populate("links");
+    if (id) {
+      const linktree = await LinktreeModel.findOne({
+        _id: id,
+        userId: user._id,
+      }).populate("links");
 
-    if (!linktree) {
-      return NextResponse.json({ msg: "Linktree not found" }, { status: 404 });
+      if (!linktree) {
+        return NextResponse.json(
+          { msg: "Linktree not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(linktree);
+    } else if (username) {
+      const linktree = await LinktreeModel.findOne({
+        username: username,
+        userId: user._id,
+      }).populate("links");
+
+      if (!linktree) {
+        return NextResponse.json(
+          { msg: "Linktree not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(linktree);
     }
-    return NextResponse.json(linktree);
   } catch (error) {
     console.error("Error in GET request:", error.message);
     return NextResponse.json({ msg: "Internal server error" }, { status: 500 });

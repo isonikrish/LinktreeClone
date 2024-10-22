@@ -10,7 +10,15 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [selectedLinktree, setSelectedLinktree] = useState(null);
     const [linktree, setLinktree] = useState(null);
-  
+    const [bgColor, setBgColor] = useState(() => {
+        // Get initial bgColor from local storage or default to "white"
+        return localStorage.getItem('bgColor') || "white";
+    });
+    const [color, setColor] = useState(() => {
+        // Get initial color from local storage or default to "black"
+        return localStorage.getItem('color') || "black";
+    });
+
     useEffect(() => {
         const token = getCookie('userToken'); // Check for the token
         if (token) {
@@ -41,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         fetchLinktree(); // Fetch linktree whenever selectedLinktree or isToggled changes
-    }, [selectedLinktree]); 
+    }, [selectedLinktree]);
 
     async function fetchLinktree() {
         if (selectedLinktree?._id) {
@@ -54,8 +62,29 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    // Effect to store bgColor and color in local storage whenever they change
+    useEffect(() => {
+        localStorage.setItem('bgColor', bgColor);
+    }, [bgColor]);
+
+    useEffect(() => {
+        localStorage.setItem('color', color);
+    }, [color]);
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, setUser, selectedLinktree, setSelectedLinktree, linktree, fetchLinktree }}>
+        <AuthContext.Provider value={{ 
+            isAuthenticated, 
+            user, 
+            setUser, 
+            selectedLinktree, 
+            setSelectedLinktree, 
+            linktree, 
+            fetchLinktree,
+            setBgColor,
+            bgColor,
+            color,
+            setColor
+        }}>
             {children}
         </AuthContext.Provider>
     );
