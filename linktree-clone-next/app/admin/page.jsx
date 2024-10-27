@@ -4,11 +4,23 @@ import LinktreeBox from "@/Components/LinktreeBox";
 import LinktreeCTA from "@/Components/LinktreeCTA";
 import { useAuth } from "@/Contexts/AuthContext";
 import axios from "axios";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 function Page() {
-  const { linktree, fetchLinktree } = useAuth();
+  const { linktree, fetchLinktree, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      redirect("/"); // Redirect to the admin page
+    }
+  }, [isAuthenticated, redirect]);
+
+  // Show loading while authentication is being checked
+  if (isAuthenticated === undefined) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
@@ -28,6 +40,7 @@ function Page() {
                   linktreeId={linktree._id}
                   isVisible={link?.isVisible}
                   fetchLinktree={fetchLinktree}
+                  clicks={link?.clicks}
                 />
               );
             })}

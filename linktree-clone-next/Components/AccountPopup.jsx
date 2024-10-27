@@ -6,6 +6,9 @@ import { CiLogout } from "react-icons/ci";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/Contexts/AuthContext';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 function AccountPopup() {
     const { selectedLinktree, setSelectedLinktree, user,linktree } = useAuth();
@@ -16,7 +19,14 @@ function AccountPopup() {
         setSelectedLinktree(linktree);  // Update the selected Linktree
         setIsDropdownOpen(false);  // Close the dropdown after selection
     }
-
+    async function handleSignout(){
+        const response = await axios.post('/api/auth/signout');
+        if(response.status === 200){
+            toast.success("Signout successfull")
+        }else{
+            toast.error("Error in signing out")
+        }
+    }
     return (
         <div className='bg-white px-6 py-2 shadow-lg rounded-sm w-[400px]'>
 
@@ -68,7 +78,7 @@ function AccountPopup() {
                         <RiAccountBoxLine className='text-2xl text-gray-600' />
                         <span className='text-gray-700 text-[16px]'>My Account</span>
                     </li>
-                    <li className='flex items-center gap-4 cursor-pointer py-2 px-3 rounded-lg transition hover:bg-stone-100'>
+                    <li className='flex items-center gap-4 cursor-pointer py-2 px-3 rounded-lg transition hover:bg-stone-100' onClick={handleSignout}>
                         <CiLogout className='text-2xl text-red-600' />
                         <span className='text-red-600 text-[16px]'>Sign out</span>
                     </li>

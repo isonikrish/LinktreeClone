@@ -1,38 +1,48 @@
-"use client"
-import React, { useState } from 'react'
-import logo from '@/Assets/logo.png'
+'use client';
+
+import React, { useState } from 'react';
+import logo from '@/Assets/logo.png';
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import Image from 'next/image'
+import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+
 function Login({ setLogin }) {
     const [showPassword, setShowPassword] = useState(false);
-    const [email,setEmail] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
+
     // Toggle function for showing/hiding password
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-    const handleSubmit = async(e) =>{
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append("email",email);
-        formData.append("password",password);
-        
+        formData.append("email", email);
+        formData.append("password", password);
+
         try {
             const response = await axios.post('/api/auth/login', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    'Content-Type': 'multipart/form-data',
+                },
             });
+
             if (response.status === 200) {
+                //router.push("/admin")
                 toast.success('Login Successfully! 🎉');
+                
             }
         } catch (error) {
             const errorMessage = error.response?.data?.msg || 'Something went wrong!';
             toast.error(errorMessage);
         }
-    }
+    };
+
     return (
         <div className='w-full h-full'>
             <div className='px-12 py-12'>
@@ -49,7 +59,7 @@ function Login({ setLogin }) {
                             type='text'
                             placeholder='Email'
                             className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8128D9]'
-                            onChange={(e)=> setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             value={email}
                             required
                         />
@@ -59,7 +69,7 @@ function Login({ setLogin }) {
                             type={showPassword ? 'text' : 'password'}
                             placeholder='Password'
                             className='w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8128D9]'
-                            onChange={(e)=>setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             value={password}
                             required
                         />
@@ -88,9 +98,8 @@ function Login({ setLogin }) {
                     </span>
                 </div>
             </div>
-
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;

@@ -41,16 +41,12 @@ export async function POST(request) {
 }
 export async function PUT(request) {
   try {
-    const { linkId, linktreeId, isVisible } = await request.json();
-    if (!linkId || !linktreeId) {
-      return NextResponse.json(
-        { msg: "Missing link or linktree ID" },
-        { status: 400 }
-      );
-    }
-    const linktreeFound = await LinktreeModel.findOne({ _id: linktreeId });
-    if (!linktreeFound) {
-      return NextResponse.json({ msg: "No linktree found" }, { status: 404 });
+    const { linkId, linktreeId, isVisible, incrementClicks } =
+      await request.json();
+
+    // Check if linkId is provided
+    if (!linkId) {
+      return NextResponse.json({ msg: "Missing link ID" }, { status: 400 });
     }
 
     // Find the link in the database
@@ -59,9 +55,21 @@ export async function PUT(request) {
       return NextResponse.json({ msg: "No link found" }, { status: 404 });
     }
 
-    if (typeof isVisible !== "undefined") {
+    // Check if linktreeId is required for visibility updates
+    if (typeof isVisible !== "undefined" && linktreeId) {
+      const linktreeFound = await LinktreeModel.findOne({ _id: linktreeId });
+      if (!linktreeFound) {
+        return NextResponse.json({ msg: "No linktree found" }, { status: 404 });
+      }
+      // Update the visibility if provided
       linkToUpdate.isVisible = isVisible;
     }
+
+    // Increment clicks if the flag is set
+    if (incrementClicks) {
+      linkToUpdate.clicks += 1;
+    }
+
     await linkToUpdate.save();
 
     // Return success response
@@ -74,6 +82,7 @@ export async function PUT(request) {
     return NextResponse.json({ msg: "Internal Server Error" }, { status: 500 });
   }
 }
+
 export async function DELETE(request) {
   const user = protectUser(request);
   const url = new URL(request.url);

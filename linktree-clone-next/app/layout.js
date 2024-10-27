@@ -1,4 +1,4 @@
-// app/layout.js or for the main app
+
 import { AuthProvider } from "@/Contexts/AuthContext.jsx";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";

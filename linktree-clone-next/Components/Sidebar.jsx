@@ -66,19 +66,6 @@ function Sidebar() {
               <span className="text-lg font-normal">Analytics</span>
             </li>
           </Link>
-
-          <Link href="/admin/settings">
-            <li
-              onClick={() => handleMenuClick('/admin/settings')}
-              className={`flex items-center space-x-3 py-4 my-4 rounded-2xl px-2 cursor-pointer transition duration-200 ${activeMenu === '/admin/settings'
-                  ? 'text-[#8129D9] bg-[#F3F3F1]'
-                  : 'text-gray-700 hover:text-[#8129D9] hover:bg-[#F3F3F1]'
-                }`}
-            >
-              <RiSettingsLine className="text-2xl" />
-              <span className="text-lg font-normal">Settings</span>
-            </li>
-          </Link>
         </ul>
       </div>
 

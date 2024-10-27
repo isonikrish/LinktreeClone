@@ -5,11 +5,13 @@ import Image from 'next/image';
 import { IoEyeOutline, IoEyeOffOutline  } from "react-icons/io5";
 import { toast } from 'react-hot-toast'; 
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 function Signup({ setLogin }) {
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
     // Toggle function for showing/hiding password
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -30,6 +32,7 @@ function Signup({ setLogin }) {
             if (response.status === 201) {
                 toast.success('Account created successfully! 🎉');
                 setLogin(true);
+                //router.push('/admin')
             }
         } catch (error) {
             const errorMessage = error.response?.data?.msg || 'Something went wrong!';

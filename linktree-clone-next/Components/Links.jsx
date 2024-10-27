@@ -6,7 +6,7 @@ import axios from 'axios'; // Import axios
 import { useAuth } from '@/Contexts/AuthContext';
 import toast from 'react-hot-toast';
 
-function Links({ title, url, id, linktreeId, isVisible, fetchLinktree }) {
+function Links({ title, url, id, linktreeId, isVisible, fetchLinktree , clicks}) {
     const [isToggled, setIsToggled] = useState(isVisible || false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -74,7 +74,9 @@ function Links({ title, url, id, linktreeId, isVisible, fetchLinktree }) {
                     
                     {/* Icons: Analytics and Delete */}
                     <div className="flex gap-4 mt-2">
+                    <span className='flex items-center gap-2'>
                         <SiGoogleanalytics className="text-gray-600 cursor-pointer hover:text-[#8129D9] transition duration-200" />
+                        {clicks}</span>
                         <RiDeleteBin6Line className="text-gray-600 cursor-pointer hover:text-red-600 transition duration-200" onClick={() => onDelete(id)} />
                     </div>
                 </div>

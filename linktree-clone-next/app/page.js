@@ -5,25 +5,25 @@ import Login from "@/Components/Login";
 import Signup from "@/Components/Signup";
 import Image from "next/image";
 import BannerImg from "@/Assets/banner-login.png";
-import { Toaster } from "react-hot-toast";
+import { redirect, useRouter} from "next/navigation";
 import { useAuth } from "@/Contexts/AuthContext";
-import { redirect } from "next/navigation";
-
 export default function Auth() {
   const [login, setLogin] = useState(true);
-  const { isAuthenticated } = useAuth(); // Get authentication state
-
+  const router = useRouter();
+  const {isAuthenticated} = useAuth();
   useEffect(() => {
+    // Redirect based on authentication status
     if (isAuthenticated) {
-      redirect("/admin"); // Redirect to the admin page
+      router.push('/admin');
+    } else {
+      router.push('/'); // Redirect to home if not authenticated
     }
-  }, [isAuthenticated, redirect]); // Add dependencies to the useEffect
-
+  }, [isAuthenticated, router]);
   return (
     <div className="flex h-screen">
       
       <div className="flex-1 flex bg-white shadow-md">
-        {login ? <Login setLogin={setLogin} /> : <Signup setLogin={setLogin} />}
+        {login ? <Login setLogin={setLogin}/> : <Signup setLogin={setLogin}/>}
       </div>
       <div className="flex-1 relative hidden lg:block">
         <Image
