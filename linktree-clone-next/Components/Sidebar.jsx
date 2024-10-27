@@ -14,7 +14,7 @@ function Sidebar() {
 
   const [activeMenu, setActiveMenu] = useState('/admin');
   const [accountClicked, setAccountClicked] = useState(false);
-  const {user, selectedLinktree} = useAuth();
+  const {user, selectedLinktree,linktree} = useAuth();
   const handleMenuClick = (path) => {
     setActiveMenu(path);
   };
@@ -84,7 +84,7 @@ function Sidebar() {
 
       {/* User Box */}
       <div className="flex items-center space-x-3 p-4 bg-[#F3F3F1] rounded-full cursor-pointer relative select-none" onClick={()=>setAccountClicked(!accountClicked)}>
-        <Image src={placeholder} width={40} height={40} alt="User" className="rounded-full" />
+        <Image src={linktree?.image || placeholder} width={40} height={40} alt="User" className="rounded-full" />
         <p className="text-lg font-medium text-gray-800">@{selectedLinktree?.username}</p>
       </div>
       <div className='absolute left-[15%] bottom-10'>

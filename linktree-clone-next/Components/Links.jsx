@@ -1,17 +1,32 @@
-"use client";
 import React, { useState, useEffect } from 'react';
 import { SiGoogleanalytics } from "react-icons/si";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { RxDragHandleDots2 } from "react-icons/rx";
-import { IoShareOutline } from "react-icons/io5";
 import axios from 'axios'; // Import axios
 import { useAuth } from '@/Contexts/AuthContext';
+import toast from 'react-hot-toast';
 
-function Links({ title, url, id, linktreeId, isVisible,fetchLinktree }) {
+function Links({ title, url, id, linktreeId, isVisible, fetchLinktree }) {
     const [isToggled, setIsToggled] = useState(isVisible || false);
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false);
 
-    // Update isToggled when isVisible prop changes
+    const onDelete = async (id) => {
+        try {
+            // Await the delete request and pass the id as query param
+            const response = await axios.delete(`/api/link?id=${id}`);
+            
+            if (response.status === 200) {
+                toast.success("Link Deleted Successfully");
+                fetchLinktree(); // Call fetchLinktree to update the list after deletion
+            } else {
+                toast.error("Failed to delete the link.");
+            }
+        } catch (error) {
+            console.error("Error deleting link:", error);
+            toast.error("An error occurred while deleting the link.");
+        }
+    };
+
     useEffect(() => {
         setIsToggled(isVisible);
     }, [isVisible]);
@@ -60,13 +75,12 @@ function Links({ title, url, id, linktreeId, isVisible,fetchLinktree }) {
                     {/* Icons: Analytics and Delete */}
                     <div className="flex gap-4 mt-2">
                         <SiGoogleanalytics className="text-gray-600 cursor-pointer hover:text-[#8129D9] transition duration-200" />
-                        <RiDeleteBin6Line className="text-gray-600 cursor-pointer hover:text-red-600 transition duration-200" />
+                        <RiDeleteBin6Line className="text-gray-600 cursor-pointer hover:text-red-600 transition duration-200" onClick={() => onDelete(id)} />
                     </div>
                 </div>
 
                 {/* Share Icon and Toggle Switch */}
                 <div className="flex justify-between items-center mt-3 gap-3">
-                    <IoShareOutline className="text-gray-600 cursor-pointer hover:text-[#8129D9] transition duration-200" />
                     <button
                         className={`flex items-center justify-between w-10 h-6 rounded-full p-1 cursor-pointer transition duration-300 ${isToggled ? 'bg-green-500' : 'bg-gray-300'}`}
                         onClick={toggleHandler}

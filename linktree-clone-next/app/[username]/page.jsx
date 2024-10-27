@@ -1,5 +1,6 @@
 // app/[username]/page.jsx
 "use client"
+import Preview from "@/Components/Preview";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -19,10 +20,10 @@ export default function Page({ params }) {
   useEffect(()=>{
     fetchLinktree();
   },[])
+  
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Welcome, {username}!</h1>
-      <p>This is your personalized page.</p>
+    <div className={`p-4 h-[100vh] w-full flex justify-center items-center ${linktree?.bgColor}`}>
+      <Preview linktrees={linktree}/>
     </div>
   );
 }

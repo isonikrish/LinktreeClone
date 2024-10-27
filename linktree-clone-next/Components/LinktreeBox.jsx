@@ -3,16 +3,13 @@ import React, { useState } from 'react'
 import placeholder from '@/Assets/placeholder.png'
 import Image from 'next/image'
 import { CiInstagram, CiFacebook, CiYoutube } from "react-icons/ci";
-import { MdOutlineEmail, MdAdd, MdEdit } from "react-icons/md"; // Added Add and Edit icons
+import { MdOutlineEmail, MdAdd } from "react-icons/md"; // Added Add and Edit icons
 import { useAuth } from '@/Contexts/AuthContext';
 import AddLink from './AddLink';
 
 function LinktreeBox() {
     const { selectedLinktree } = useAuth();
     const [addLinkOpen, setAddLinkOpen] = useState(false);
-    const handleEditProfilePic = () => {
-        console.log("Edit profile picture clicked");
-    };
 
     const handleAddSocialImage = (platform) => {
         console.log(`Add image for ${platform} clicked`);
@@ -23,16 +20,7 @@ function LinktreeBox() {
 
             <div className="flex flex-row items-center p-6 mx-auto space-y-4 space-x-5">
                 <div className="w-20 h-20 rounded-full overflow-hidden relative">
-                    <Image src={selectedLinktree?.profilePic || placeholder} alt="Profile" width={80} height={80} className="object-cover" />
-
-
-                    <div
-                        onClick={handleEditProfilePic}
-                        className="absolute right-1 bottom-4 bg-white p-1 rounded-full hover:bg-gray-300 cursor-pointer z-10"
-                        title="Edit Profile Picture"
-                    >
-                        <MdEdit className="text-gray-600 text-[20px]" />
-                    </div>
+                    <Image src={selectedLinktree?.image || placeholder} alt="Profile" width={80} height={80} className="object-cover" />
 
                 </div>
 

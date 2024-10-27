@@ -1,6 +1,7 @@
 "use client"; // Ensuring this is a client-side component
 import Links from "@/Components/Links";
 import LinktreeBox from "@/Components/LinktreeBox";
+import LinktreeCTA from "@/Components/LinktreeCTA";
 import { useAuth } from "@/Contexts/AuthContext";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ function Page() {
   return (
     <div>
       <Toaster />
+      <LinktreeCTA />
       <div className="py-3">
         {linktree ? (
           <div className="w-[800px] mx-3 flex flex-col items-center justify-center">

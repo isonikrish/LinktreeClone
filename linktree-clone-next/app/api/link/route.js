@@ -1,5 +1,6 @@
 import LinkModel from "@/lib/models/LinkModel";
 import LinktreeModel from "@/lib/models/LinktreeModel";
+import { protectUser } from "@/lib/utils/protectRoute";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -71,5 +72,38 @@ export async function PUT(request) {
   } catch (error) {
     console.error("Error updating link:", error);
     return NextResponse.json({ msg: "Internal Server Error" }, { status: 500 });
+  }
+}
+export async function DELETE(request) {
+  const user = protectUser(request);
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+  try {
+    const link = await LinkModel.findOne({ _id: id });
+    if (!link) {
+      return NextResponse.json(
+        { msg: "Link not found or not authorized to delete" },
+        { status: 404 }
+      );
+    }
+    const linktree = await LinktreeModel.findOne({ links: id });
+    if (!linktree) {
+      return NextResponse.json(
+        { msg: "Linktree not found or link not associated with this user" },
+        { status: 404 }
+      );
+    }
+
+    linktree.links.pull(link._id); // Remove link from the array
+    await linktree.save();
+    await LinkModel.deleteOne({ _id: id });
+
+    return NextResponse.json(
+      { msg: "Link deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error in Delete request:", error.message);
+    return NextResponse.json({ msg: "Internal server error" }, { status: 500 });
   }
 }

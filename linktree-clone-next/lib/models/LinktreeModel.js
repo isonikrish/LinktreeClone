@@ -28,6 +28,14 @@ const LinktreeSchema = new mongoose.Schema(
         ref: "Link",
       },
     ],
+    bgColor: {
+      type: String,
+      default: "white"
+    },
+    color: {
+      type:String,
+      default:"black"
+    },
   },
   { timestamps: true }
 );

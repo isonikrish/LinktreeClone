@@ -1,4 +1,5 @@
-// /api/linktree
+import cloudinary from "@/lib/config/cloudinary.js";
+
 import { connectDB } from "@/lib/config/db";
 import LinkModel from "@/lib/models/LinkModel";
 import LinktreeModel from "@/lib/models/LinktreeModel";
@@ -100,7 +101,6 @@ export async function GET(request) {
     } else if (username) {
       const linktree = await LinktreeModel.findOne({
         username: username,
-        userId: user._id,
       }).populate("links");
 
       if (!linktree) {
@@ -113,6 +113,57 @@ export async function GET(request) {
     }
   } catch (error) {
     console.error("Error in GET request:", error.message);
+    return NextResponse.json({ msg: "Internal server error" }, { status: 500 });
+  }
+}
+export async function PUT(request) {
+  await connectDB(); // Ensure DB connection
+  const user = await protectUser(request);
+
+  try {
+    const formData = await request.formData();
+    const linktreeId = formData.get("linktreeId");
+    const image = formData.get("image");
+    const bgColor = formData.get("bgColor");
+    const color = formData.get("color");
+
+    const linktree = await LinktreeModel.findOne({ _id: linktreeId, userId: user._id });
+    if (!linktree) {
+      return NextResponse.json({ msg: "Linktree not found" }, { status: 404 });
+    }
+
+    // If there's a new image file, upload it to Cloudinary
+    if (image && image.size > 0) {
+      const imageBuffer = Buffer.from(await image.arrayBuffer());
+
+      // Upload the image to Cloudinary using a promise-based approach
+      const imageUrl = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "linktree_images" }, // Upload options
+          (error, result) => {
+            if (error) {
+              return reject(new Error("Cloudinary upload failed"));
+            }
+            resolve(result.secure_url); // Return the image URL
+          }
+        );
+        // Pipe the buffer into the upload stream
+        uploadStream.end(imageBuffer);
+      });
+
+      // Update the image field directly
+      linktree.image = imageUrl; // Set the new image URL
+    }
+
+    // Update the other Linktree fields
+    linktree.bgColor = bgColor || linktree.bgColor;
+    linktree.color = color || linktree.color;
+
+    await linktree.save();
+
+    return NextResponse.json({ linktree }, { status: 200 });
+  } catch (error) {
+    console.error("Error in PUT request:", error.message);
     return NextResponse.json({ msg: "Internal server error" }, { status: 500 });
   }
 }

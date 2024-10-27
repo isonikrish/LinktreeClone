@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useAuth } from '@/Contexts/AuthContext';
 
 function AccountPopup() {
-    const { selectedLinktree, setSelectedLinktree, user } = useAuth();
+    const { selectedLinktree, setSelectedLinktree, user,linktree } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);  // Toggle dropdown state
 
     // Function to handle the selection of a Linktree
@@ -25,7 +25,7 @@ function AccountPopup() {
                 className='flex items-center py-3 gap-8 justify-center cursor-pointer hover:bg-stone-100 rounded-lg'
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Toggle dropdown
             >
-                <Image src={placeholder} width={48} height={48} className='rounded-full' />
+                <Image src={linktree?.image || placeholder} width={48} height={48} className='rounded-full' />
                 <div className='flex flex-col items-start'>
                     <p className='font-semibold text-[20px]'>@{selectedLinktree?.username || "Select a Linktree"}</p>
                     <p className='text-[#676B5F] text-[13px]'>linktr.ee/{selectedLinktree?.username || ""}</p>
@@ -42,7 +42,7 @@ function AccountPopup() {
                             className='flex items-center py-3 gap-8 justify-center cursor-pointer hover:bg-stone-100 rounded-lg'
                             onClick={() => handleLinktreeSelect(linktree)}  // Select the linktree
                         >
-                            <Image src={placeholder} width={48} height={48} className='rounded-full' />
+                            <Image src={linktree?.image || placeholder} width={48} height={48} className='rounded-full' />
                             <div className='flex flex-col items-start'>
                                 <p className='font-semibold text-[20px]'>@{linktree.username}</p>
                                 <p className='text-[#676B5F] text-[13px]'>linktr.ee/{linktree.username}</p>
